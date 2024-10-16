@@ -1,0 +1,98 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+/* Estilo do sidenav */
+.sidenav {
+  width: 20%;
+  background-color: white;
+  height: 100vh;
+  padding: 20px;
+  color: white;
+  box-sizing: border-box;
+}
+
+.sidenav h2 {
+  color: #110101;
+  margin-bottom: 20px;
+}
+
+.sidenav a {
+  color: #110101;
+  padding: 10px;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.sidenav svg{
+  margin-right: 15px;
+}
+
+.sidenav a:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Estilo da área de chat */
+.chat {
+  width: 80%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #ebeaea;
+}
+
+.chat-header {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+#chat-messages {
+  height: 75vh;
+  overflow-y: auto;
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#chat-messages p {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 4px;
+  width: 30%;
+  word-break: break-word;
+}
+
+.chat-input {
+  display: flex;
+  
+  margin-top: 10px;
+}
+
+.chat-input input {
+  width: calc(100% - 60px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+}
+
+.chat-input button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background-color: #0056b3;
+}
