@@ -3,11 +3,34 @@ import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { Server } from 'socket.io';
+import { MongoClient } from 'mongodb';
 
 const app = express();
 const server = createServer(app);
 const port = 3000;
 const io = new Server(server);
+
+let singleton;
+
+async function connect(){
+    if(singleton) return singleton;
+
+    const client = new MongoClient('mongodb://localhost:27017/');
+    await client.connect();
+
+    singleton = client.db('chatApp');
+    return singleton;
+}
+
+async function insertMessage(message){
+    const db = await connect();
+    return db.collection('messages').insertOne(message);
+}
+
+async function findMessages(chatName){
+    const db = await connect();
+    return db.collection('messages').find({chatName: chatName}).toArray();
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -21,6 +44,10 @@ app.get('/style.css', (req, res) => {
 
 app.get('/', (req, res) => {
     res.sendFile(join(__dirname, 'public/index.html'));
+});
+
+app.get('/register', (req, res) => {
+    res.sendFile(join(__dirname, 'public/register.html'));
 });
 
 let users = [];
@@ -43,19 +70,23 @@ const colors = ['#d1e2f3', '#ddffc3', '#fbb6b6', '#f1e8a5', '#c1c1bf'];
 
 io.on("connection", (socket) => {
 
-    socket.on("join server", () => {
+    socket.on("join server", (username,avatar) => {
         const user = {
             id: socket.id,
+            name: username,
+            avatar: avatar,
             color: colors[Math.floor(Math.random() * colors.length)]
         };
         users.push(user);
+        console.log(users);
         io.emit("new user", users);
     });
 
     socket.on("join room", (roomName, socketId) => {
         socket.join(roomName);
         if (messages[roomName]) {
-            io.to(roomName).emit("load messages", messages[roomName], socketId, rooms[roomName], users);
+            const messagesDb = findMessages(roomName);
+            messagesDb.then((messages) => io.to(roomName).emit("load messages", messages, socketId, rooms[roomName], users));
         }
     });
 
@@ -72,9 +103,12 @@ io.on("connection", (socket) => {
         const payload = {
             content: content,
             chatName: chatName,
-            sender: socket.id,
+            sender: users.find(obj => obj.id === socket.id).name,
+            avatar: users.find(obj => obj.id === socket.id).avatar,
             color: users.find(obj => obj.id === socket.id).color,
         };
+
+        insertMessage(payload);
         io.to(to).emit("new message", payload);
 
         if (messages[chatName]) {

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" integrity="sha512-6sSYJqDreZRZGkJ3b+YfdhB3MzmuP9R7X1QZ6g5aIXhRvR1Y/N/P47jmnkENm7YL3oqsmI6AK+V6AD99uWDnIw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Cadastro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 5px;
+        }
+
+        .form-group input[type="button"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-group input[type="button"]:hover {
+            background-color: #218838;
+        }
+
+        .profile-pic {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-pic img {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+        }
+
+        .profile-pic label {
+            margin-top: 10px;
+            cursor: pointer;
+            color: #007bff;
+        }
+
+        .profile-pic input {
+            display: none;
+        }
+
+        .profile-pic label:hover {
+            text-decoration: underline;
+        }
+
+        #randomBtn {
+            position: absolute;
+            bottom: 50%;
+            right: 47%;
+            width: 30px;
+            height: 25px;
+            border-radius: 60px;
+            background-color: #00ffff;
+            border: 1px solid;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Cadastro de Usuário</h2>
+        <form action="#" method="POST" enctype="multipart/form-data">
+            <div class="profile-pic">
+                <img alt="Foto de Perfil" id="profileImage">
+            </div>
+
+            <div class="form-group">
+                <label for="username">Nome de Usuário</label>
+                <input type="text" id="username" name="username" placeholder="Digite seu nome de usuário" required>
+                <button id="randomBtn" onclick="generateRandomAvatar()"><i class="fa-solid fa-shuffle"></i></button>
+            </div>
+
+            <div class="form-group">
+                <input type="button" value="Entrar no chat" id="joinChat" onclick="join()">
+            </div>
+        </form>
+    </div>
+
+    <script>
+        generateRandomAvatar();
+        
+        function generateRandomAvatar() {
+            const style = 'adventurer-neutral';
+            const glassesProb = Math.floor(Math.random() * (100 - 1 + 1) + 1);
+            var mouth = Math.floor(Math.random() * (30 - 1 + 1) + 1); // Gera uma seed aleatória
+            if(mouth < 10){
+                mouth = ('0'+mouth).slice(-2);
+            }
+            const backgrounds = ['b6e3f4', 'c0aede', 'd1d4f9', 'ffd5dc', 'ffdfbf'];
+            const seeds = ['Alexander', 'Aiden', 'Christian', 'Brian', 'Riley', 'Sara', 'Caleb', 'Mason', 'Vivian', 'Andrea', 'Jude', 'Kimberly', 'Leo', 'Christopher', 'George', 'Sophia'];
+            const url = `https://api.dicebear.com/9.x/${style}/svg?mouth=variant`+mouth+`&glassesProbability=`+glassesProb+`&backgroundColor=`+backgrounds[Math.floor(Math.random() * backgrounds.length)]+`&seed=`+seeds[Math.floor(Math.random() * seeds.length)];
+
+            console.log(url);
+            document.getElementById('profileImage').src = url;
+        }
+
+        function join(){
+            window.location.href = "http://localhost:3000?username="+document.getElementById('username').value+'&avatar='+document.getElementById('profileImage').src;
+        }
+        function previewImage(event) {
+
+            //document.onload = function(){
+            //}
+            // const reader = new FileReader();
+            // reader.onload = function(){
+            //     const output = document.getElementById('profileImage');
+            //     output.src = reader.result;
+            // };
+            // reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+
+</body>
+
+</html>
