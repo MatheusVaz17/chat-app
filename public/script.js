@@ -10,8 +10,16 @@ const username = params.get('username');
 const fullUrl = url.search;
 const avatarStart = fullUrl.indexOf('avatar=') + 'avatar='.length;
 const avatar = decodeURIComponent(fullUrl.slice(avatarStart));
+const user = window.localStorage.getItem('@userChatApp');
 
 socket.emit("join server", username, avatar);
+
+if (!user) {
+    window.location.href = "http://localhost:3000/register";
+}else if(user && !window.location.search.includes('username') &&!window.location.search.includes('avatar')){
+    const obj = JSON.parse(user);
+    window.location.href = "http://localhost:3000"+'?username='+obj.name+'&avatar='+obj.avatar;
+}
 
 function joinRoom(roomName) {
     if (roomConnected) {
@@ -22,6 +30,13 @@ function joinRoom(roomName) {
     roomConnected = roomName;
 }
 
+function keyupUser(e){
+    if(e.target.value.length > 0){
+        socket.emit("keyup", username, roomConnected);
+    }else{
+        socket.emit("keyupOff", username);
+    }
+}
 function sendMessage() {
     const input = document.getElementById('message');
     if (input.value.length > 0) {
@@ -44,24 +59,36 @@ function loadMessagesChat(value, socketId) {
     }
     const itemDiv = document.createElement('div');
     itemDiv.classList.add('message');
+    
+    const itemWrapper = document.createElement('div');
+    itemWrapper.classList.add('item-wrapper');
+    itemDiv.appendChild(itemWrapper);
 
+    const userName = document.createElement('p');
+    userName.textContent = value.sender;
+    userName.classList.add('user-name');
+    itemWrapper.appendChild(userName);
+
+    const messageWrapper = document.createElement('div');
+    messageWrapper.classList.add('message-wrapper');
+    itemWrapper.appendChild(messageWrapper);
+    
     const itemAvatar = document.createElement('img');
     itemAvatar.src = value.avatar;
     itemAvatar.classList.add('avatar');
     
     const item = document.createElement('p');
     item.style.backgroundColor = value.color;
-    itemDiv.appendChild(itemAvatar);
+    messageWrapper.appendChild(itemAvatar);
     
-    if (checkSocket(socketId)) {
+    if (value.sender == username) {
         itemDiv.classList.add('message-right');
     }
-    item.textContent += value.sender + ': ' + value.content;
-    item.style.marginLeft = '1%';
-    itemDiv.appendChild(item);
+    item.textContent += value.content;
+    messageWrapper.appendChild(item);
 
     chat.appendChild(itemDiv);
-    chat.scroll(0, chat.scrollHeight)
+    chat.scroll(0, chat.scrollHeight);
 }
 
 socket.on("new user", (users) => {
@@ -89,10 +116,8 @@ socket.on("new user", (users) => {
 socket.on("new message", (msg, socketId) => {
     loadMessagesChat(msg, socketId);
 });
-
 socket.on("load messages", (msg, socketId, roomTitle, users) => {
     if (checkSocket(socketId)) {
-
         const chat = document.querySelector('.messages-container');
 
         var children = Array.prototype.slice.call(chat.childNodes);
@@ -116,6 +141,10 @@ socket.on("load messages", (msg, socketId, roomTitle, users) => {
     }
 });
 
+socket.on("keypress user", (content, roomConnected) => {
+    const el = document.querySelector('.typing');
+    el.textContent = content;
+});
 
 
 addEventListener('load', () => {

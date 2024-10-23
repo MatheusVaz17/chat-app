@@ -39,8 +39,9 @@
       <!-- <p><strong>Usuário 1:</strong> Olá, como vai?</p>
       <p><strong>Usuário 2:</strong> Estou bem, e você?</p> -->
       <div class="messages-container"></div>
+      <p class="typing"></p>
       <div class="chat-input">
-        <input type="text" id="message" placeholder="Digite sua mensagem...">
+        <input type="text" id="message" placeholder="Digite sua mensagem..." oninput="keyupUser(event)">
         <button onclick="sendMessage()"><i class="fa-regular fa-paper-plane"></i></button>
       </div>
     </div>

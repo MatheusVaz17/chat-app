@@ -67,7 +67,7 @@ const messages = {
 };
 
 const colors = ['#d1e2f3', '#ddffc3', '#fbb6b6', '#f1e8a5', '#c1c1bf'];
-
+let usersKeyup = [];
 io.on("connection", (socket) => {
 
     socket.on("join server", (username,avatar) => {
@@ -118,6 +118,25 @@ io.on("connection", (socket) => {
                 color: users.find(obj => obj.id === socket.id).color,
             });
         }
+    });
+    
+    socket.on("keyup", (userName, roomConnected) => {
+        if (!usersKeyup.includes(userName)) {
+            usersKeyup.push(userName);
+            console.log(usersKeyup);
+        }
+        if (usersKeyup.length > 1) {
+            io.emit("keypress user", "mais de 1 usuário está digitando...", roomConnected);
+        }else if (usersKeyup.length === 1) {
+            io.emit("keypress user", `${userName} está digitando...`, roomConnected);
+        }else{
+            io.emit("keypress user", "", roomConnected);
+        }
+        
+    });
+
+    socket.on("keyupOff", (userName) => {
+        usersKeyup = usersKeyup.filter(u => u !== userName);
     });
 });
 

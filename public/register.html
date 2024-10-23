@@ -160,6 +160,11 @@
         }
 
         function join(){
+            const user = {
+                name: document.getElementById('username').value,
+                avatar: document.getElementById('profileImage').src
+            }
+            window.localStorage.setItem('@userChatApp', JSON.stringify(user));
             window.location.href = "http://localhost:3000?username="+document.getElementById('username').value+'&avatar='+document.getElementById('profileImage').src;
         }
         function previewImage(event) {

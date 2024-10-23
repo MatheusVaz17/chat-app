@@ -2,7 +2,7 @@
 
 :root{
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 3px;
   }
   ::-webkit-scrollbar-track {
     box-shadow: none; 
@@ -12,10 +12,6 @@
   ::-webkit-scrollbar-thumb {
     background: #007bff; 
     border-radius: 10px;
-
-    &:hover{
-      background: red;
-    }
   }
 }
 
@@ -32,28 +28,30 @@ body {
   .sidenav {
     transition: 500ms;
     width: 20vw;
-    background-color: white;
+    background-color: #202020;
     height: 100vh;
     padding: 20px;
+    border-right: 1px solid #000;
     color: white;
     box-sizing: border-box;
     position: relative;
     h2 {
-        color: #110101;
+        color: #fafafa;
         margin-bottom: 20px;
+        font-size: 16px;
     }
 
     a {
-        color: #110101;
+        color: #fafafa;
         padding: 10px;
         text-decoration: none;
         display: block;
         margin-bottom: 10px;
         border-radius: 4px;
-
+        font-size: 14px;
+        transition: 400ms;
         &:hover {
             background-color: #007bff;
-            color: white;
         }
     }
 
@@ -129,13 +127,6 @@ body {
     border-radius: 4px;
     padding-bottom: 10vh;
     position: relative;
-    p {
-        margin: 10px 0;
-        padding: 10px;
-        border-radius: 4px;
-        width: 30%;
-        word-break: break-word;
-    }
   }
 
   .messages-container{
@@ -144,10 +135,10 @@ body {
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    gap: 24px;
     scroll-snap-type: y proximity;
-
+    padding-right: 2px;
     .message{
+      gap: 12px;
       display: flex;
       align-items: center;
       scroll-snap-align: center;
@@ -155,7 +146,36 @@ body {
       animation: messageLoad 0.5s ease-in-out;
 
       &.message-right{
+        flex-direction: row-reverse;
         justify-content: end;
+      }
+
+      .item-wrapper{
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        .user-name{
+          font-size: 14px;
+          color: #555;
+          padding: 0;
+          margin: 2px 0;
+          font-weight: 500;
+        }
+        .message-wrapper{
+          display: flex;
+          gap: 12px;
+          p{
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 0px 6px 6px 6px;
+            width: 100%;
+            word-break: break-word;
+            letter-spacing: 0.5px;
+            line-height: 22px;
+            font-size: 16px;
+            font-weight: 400;
+          }
+        }
       }
     }
     .avatar{
@@ -178,11 +198,13 @@ body {
     input {
         width: calc(100% - 150px);
         height: 40px;
-        padding: 10px;
+        padding: 6px 12px 6px 12px;
         border: 1px solid #ddd;
         border-radius: 15px;
         background-color: transparent;
         color: #fff;
+        outline: none;
+        font-size: 16px;
     }
 
     button {
@@ -204,6 +226,26 @@ body {
         svg{
             font-size: 16px;
         }
+    }
+  }
+
+  .typing{
+    margin: 0;
+    text-align: center;
+    color: #cacaca6b;
+    animation: typing 2s infinite;
+  }
+
+
+  @keyframes typing{
+    0%{
+      opacity: 0.4;
+    }
+    50%{
+      opacity: 1;
+    }
+    100%{
+      opacity: 0.4;
     }
   }
 
