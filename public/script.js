@@ -65,7 +65,7 @@ function loadMessagesChat(value, socketId) {
     itemDiv.appendChild(itemWrapper);
 
     const userName = document.createElement('p');
-    userName.textContent = value.sender;
+    userName.textContent = value.sender == username ? '' : value.sender;
     userName.classList.add('user-name');
     itemWrapper.appendChild(userName);
 
@@ -138,6 +138,7 @@ socket.on("new message", (msg, socketId) => {
 socket.on("load messages", (msg, socketId, roomTitle, users) => {
     if (checkSocket(socketId)) {
         const chat = document.querySelector('.messages-container');
+        const typingEl = document.querySelector('.typing');
 
         var children = Array.prototype.slice.call(chat.childNodes);
         children.forEach((child) => {
@@ -151,9 +152,9 @@ socket.on("load messages", (msg, socketId, roomTitle, users) => {
             chatHeader.removeChild(child);
         });
 
-        document.querySelector('.typing').setAttribute('class', 'typing');
-        document.querySelector('.typing').classList.add(roomConnected);
-        document.querySelector('.typing').textContent = '';
+        typingEl.setAttribute('class', 'typing');
+        typingEl.classList.add(roomConnected);
+        typingEl.textContent = '';
 
         const elementHeader = document.createElement('h2');
         elementHeader.textContent =  roomTitle;

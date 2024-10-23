@@ -31,7 +31,7 @@ body {
     background-color: #202020;
     height: 100vh;
     padding: 20px;
-    border-right: 1px solid #000;
+    border-right: 1px solid #555;
     color: white;
     box-sizing: border-box;
     position: relative;
@@ -112,12 +112,18 @@ body {
   }
   
   .chat-header {
-    background-color: #007bff14;
-    color: white;
+    background-color: rgb(0 123 255 / 5%);
+    color: #fafafa;
     padding: 10px;
     border-radius: 4px;
     height: 10%;
+    display: flex;
+    align-items: center;
+    h2{
+      margin: 0;
+    }
   }
+
   
   #chat-messages {
     height: 70vh;
@@ -148,6 +154,9 @@ body {
       &.message-right{
         flex-direction: row-reverse;
         justify-content: end;
+        .item-wrapper{
+          align-items: end;
+        }
       }
 
       .item-wrapper{
@@ -168,7 +177,6 @@ body {
             margin: 20px 0;
             padding: 10px;
             border-radius: 0px 6px 6px 6px;
-            width: 100%;
             word-break: break-word;
             letter-spacing: 0.5px;
             line-height: 22px;
@@ -199,7 +207,7 @@ body {
         width: calc(100% - 150px);
         height: 40px;
         padding: 6px 12px 6px 12px;
-        border: 1px solid #ddd;
+        border: 1px solid #555;
         border-radius: 15px;
         background-color: transparent;
         color: #fff;
