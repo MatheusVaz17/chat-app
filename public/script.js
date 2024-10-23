@@ -31,10 +31,10 @@ function joinRoom(roomName) {
 }
 
 function keyupUser(e){
-    if(e.target.value.length > 0){
-        socket.emit("keyup", username, roomConnected);
-    }else{
+    if(e.target.value.length === 0){
         socket.emit("keyupOff", username);
+    }else{
+        socket.emit("keyup", username, roomConnected);
     }
 }
 function sendMessage() {
@@ -91,6 +91,25 @@ function loadMessagesChat(value, socketId) {
     chat.scroll(0, chat.scrollHeight);
 }
 
+function editTypingUser(usersKeyup, roomConnected){
+    console.log(roomConnected);
+    const el = document.querySelector(`.typing`);
+    if(el.classList.contains(roomConnected)){
+        let content = [];
+        usersKeyup.filter((u) => u !== username).forEach((u) => content.push(u));
+        if(content.length > 1){
+            el.textContent = 'Mais de um usuário está digitando...';
+        }else if(content.length === 1){
+            el.textContent = `${content[0]} está digitando...`;    
+        }else{
+            el.textContent = '';
+        }
+    }else{
+        el.textContent = '';
+    }
+    
+};
+
 socket.on("new user", (users) => {
     const usersList = document.getElementById('users');
     console.log(usersList);
@@ -126,11 +145,15 @@ socket.on("load messages", (msg, socketId, roomTitle, users) => {
         });
 
         const chatHeader = document.querySelector('.chat-header');
-
+        chatHeader.classList.add(roomConnected);
         var children = Array.prototype.slice.call(chatHeader.childNodes);
         children.forEach((child) => {
             chatHeader.removeChild(child);
         });
+
+        document.querySelector('.typing').setAttribute('class', 'typing');
+        document.querySelector('.typing').classList.add(roomConnected);
+        document.querySelector('.typing').textContent = '';
 
         const elementHeader = document.createElement('h2');
         elementHeader.textContent =  roomTitle;
@@ -141,9 +164,12 @@ socket.on("load messages", (msg, socketId, roomTitle, users) => {
     }
 });
 
-socket.on("keypress user", (content, roomConnected) => {
-    const el = document.querySelector('.typing');
-    el.textContent = content;
+socket.on("keypress user", (usersKeyup, roomConnected) => {
+    editTypingUser(usersKeyup, roomConnected);
+});
+
+socket.on("keypress off", (usersKeyup, roomConnected)=>{
+    editTypingUser(usersKeyup, roomConnected);
 });
 
 

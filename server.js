@@ -125,18 +125,16 @@ io.on("connection", (socket) => {
             usersKeyup.push(userName);
             console.log(usersKeyup);
         }
-        if (usersKeyup.length > 1) {
-            io.emit("keypress user", "mais de 1 usuário está digitando...", roomConnected);
-        }else if (usersKeyup.length === 1) {
-            io.emit("keypress user", `${userName} está digitando...`, roomConnected);
-        }else{
-            io.emit("keypress user", "", roomConnected);
-        }
+
+        io.emit("keypress user", usersKeyup, roomConnected);
+       
+
         
     });
 
     socket.on("keyupOff", (userName) => {
         usersKeyup = usersKeyup.filter(u => u !== userName);
+        io.emit("keypress off", usersKeyup);
     });
 });
 
