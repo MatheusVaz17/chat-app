@@ -37,7 +37,8 @@ function keyupUser(e){
         socket.emit("keyup", username, roomConnected);
     }
 }
-function sendMessage() {
+function sendMessage(event) {
+    event.preventDefault();
     const input = document.getElementById('message');
     if (input.value.length > 0) {
         socket.emit("send message", input.value, roomConnected, roomConnected);
