@@ -113,36 +113,58 @@ function loadMessagesChat(value, socketId) {
 //     }
     
 // };
-function toggleEmoji(){
+
+function closeEmoji() {
     const emojiList = document.querySelector('.emojis-list ul');
     const emojisListContainer = document.querySelector('.emojis-list');
-    if(emojisListContainer.style.display === 'block'){
+    const openEmoji = document.querySelector('.open-emojis');
+    const closeEmoji = document.querySelector('.close-emojis');
+
+    if(emojiList.childNodes){
+        emojiList.innerHTML = '';
         emojisListContainer.style.display = 'none';
-    }else if(emojisListContainer.style.display === 'none' && emojiList.childNodes){
-        emojisListContainer.style.display = 'block';
-    }else{
-        fetch('http://localhost:3000/emojis.json').then((data) => {
-            return data.json();
-        }).then((data) => {
-            showEmoji(data);
-        });
-    
-        function showEmoji(data){
-            data.forEach((emoji) => {
-                let item = document.createElement('li');
-                item.setAttribute('emoji-name', emoji.slug);
-                item.textContent = emoji.character;
-                emojiList.appendChild(item);
-                item.addEventListener('click', () => {
-                    const input = document.getElementById('message');
-                    const emojiName = item.textContent;
-                    input.value += emojiName;
-                    input.focus();
-                })
-            })
-            emojisListContainer.style.display = 'block';
-        }
     }
+
+    openEmoji.style.display = 'block';
+    closeEmoji.style.display = 'none';
+}
+function toggleEmoji(group = 'smileys-emotion') {
+    const emojiList = document.querySelector('.emojis-list ul');
+    const emojisListContainer = document.querySelector('.emojis-list');
+    const openEmoji = document.querySelector('.open-emojis');
+    const closeEmoji = document.querySelector('.close-emojis');
+
+    emojiList.innerHTML = '';
+
+    fetch('http://localhost:3000/emojis.json').then((data) => {
+        return data.json();
+    }).then((data) => {
+        let emojis = [];
+        data.filter((emoji) => emoji.group === group).forEach((emoji) => {
+            emojis.push(emoji);
+        })
+        showEmoji(emojis);
+    });
+    
+    function showEmoji(data){
+        data.forEach((emoji) => {
+            let item = document.createElement('li');
+            item.setAttribute('emoji-name', emoji.slug);
+            item.textContent = emoji.character;
+            emojiList.appendChild(item);
+            item.addEventListener('click', () => {
+                const input = document.getElementById('message');
+                const emojiName = item.textContent;
+                input.value += emojiName;
+                input.focus();
+            })
+        })
+        emojisListContainer.style.display = 'block';
+    }
+    
+
+    openEmoji.style.display = 'none';
+    closeEmoji.style.display = 'block';
 }
 
 
@@ -217,6 +239,7 @@ socket.on("load messages", (msg, socketId, roomTitle, users) => {
 
 addEventListener('load', () => {
     const buttonSidenav = document.querySelector('.sidenav-slide'); 
+    const emojiGroup = document.querySelectorAll('.emoji-group');
     buttonSidenav.addEventListener('click', () => {
         const sidenav = document.querySelector('.sidenav');
         if(sidenav.classList.contains('close')){
@@ -225,4 +248,10 @@ addEventListener('load', () => {
             sidenav.classList.add('close');
         }
      });
+
+     Array.from(emojiGroup).forEach((emoji) => {
+        emoji.addEventListener('click', () => {
+            toggleEmoji(emoji.getAttribute('data-group'));
+        });
+     })
 });

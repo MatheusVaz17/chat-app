@@ -223,17 +223,18 @@ body {
 }
 .chat-input form .emoji-container .emoji-wrapper .emojis-list {
   position: absolute;
-  top: -220px;
+  top: -310px;
   right: 50%;
-  background-color: #fff;
+  background-color: #202020;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: 210px;
-  height: 210px;
+  width: 300px;
+  height: 300px;
   transform: translate(-15%, 0px);
   display: none;
   transition: 400ms;
   animation: emojiLoad 0.6s ease-in-out;
+  border: 1px solid #555;
 }
 .chat-input form .emoji-container .emoji-wrapper .emojis-list ul {
   list-style: none;
@@ -245,6 +246,7 @@ body {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   align-items: center;
   gap: 6px;
+  height: 85%;
 }
 .chat-input form .emoji-container .emoji-wrapper .emojis-list ul li {
   display: flex;
@@ -252,11 +254,34 @@ body {
   align-items: center;
   cursor: pointer;
   height: 40px;
-  font-size: 20px;
+  font-size: 24px;
 }
 .chat-input form .emoji-container .emoji-wrapper .emojis-list ul li:hover {
   background-color: #007bff;
   border-radius: 6px;
+}
+.chat-input form .emoji-container .emoji-wrapper .emojis-list .emojis-groups {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  height: 15%;
+  overflow: hidden;
+  padding: 0px 2px;
+  border-top: 1px solid #555;
+}
+.chat-input form .emoji-container .emoji-wrapper .emojis-list .emojis-groups li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  font-size: 18px;
+}
+.chat-input form .emoji-container .emoji-wrapper .emojis-list .emojis-groups li:hover {
+  background-color: #555;
+  opacity: 0.8;
+  border-radius: 0px;
+}
+.chat-input form .emoji-container .emoji-wrapper button.close-emojis {
+  display: none;
 }
 .chat-input form .emoji-container .emoji-wrapper button {
   background-color: transparent;
