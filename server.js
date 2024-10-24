@@ -50,6 +50,13 @@ app.get('/register', (req, res) => {
     res.sendFile(join(__dirname, 'public/register.html'));
 });
 
+app.get('/click.mp3', (req, res) => {
+    res.sendFile(join(__dirname, 'public/click.mp3'));
+});
+app.get('/emojis.json', (req, res) => {
+    res.sendFile(join(__dirname, 'public/emojis.json'));
+});
+
 let users = [];
 
 const rooms = {
@@ -67,7 +74,7 @@ const messages = {
 };
 
 const colors = ['#d1e2f3', '#ddffc3', '#fbb6b6', '#f1e8a5', '#c1c1bf'];
-let usersKeyup = [];
+// let usersKeyup = [];
 io.on("connection", (socket) => {
 
     socket.on("join server", (username,avatar) => {
@@ -120,22 +127,22 @@ io.on("connection", (socket) => {
         }
     });
     
-    socket.on("keyup", (userName, roomConnected) => {
-        if (!usersKeyup.includes(userName)) {
-            usersKeyup.push(userName);
-            console.log(usersKeyup);
-        }
+    // socket.on("keyup", (userName, roomConnected) => {
+    //     if (!usersKeyup.includes(userName)) {
+    //         usersKeyup.push(userName);
+    //         console.log(usersKeyup);
+    //     }
 
-        io.emit("keypress user", usersKeyup, roomConnected);
+    //     io.emit("keypress user", usersKeyup, roomConnected);
        
 
         
-    });
+    // });
 
-    socket.on("keyupOff", (userName) => {
-        usersKeyup = usersKeyup.filter(u => u !== userName);
-        io.emit("keypress off", usersKeyup);
-    });
+    // socket.on("keyupOff", (userName) => {
+    //     usersKeyup = usersKeyup.filter(u => u !== userName);
+    //     io.emit("keypress off", usersKeyup);
+    // });
 });
 
 server.listen(port, () => {
