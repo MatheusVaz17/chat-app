@@ -1,7 +1,8 @@
 import express from 'express';
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
-
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 //Routes
 import filesRoutes from './routes/files.js';
 import userRoutes from './routes/user.js';
@@ -18,6 +19,8 @@ app.use(express.json());
 
 app.use(filesRoutes);
 app.use(userRoutes);
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 app.get('/click.mp3', (req, res) => {
     res.sendFile(join(__dirname, 'public/click.mp3'));
@@ -84,7 +87,7 @@ io.on("connection", (socket) => {
             color: users.find(obj => obj.id === socket.id).color,
         };
 
-        insertMessage(payload);
+        // insertMessage(payload);
         io.to(to).emit("new message", payload);
 
         if (messages[chatName]) {
