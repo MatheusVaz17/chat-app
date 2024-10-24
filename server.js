@@ -1,54 +1,23 @@
 import express from 'express';
 import { createServer } from 'node:http';
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
 import { Server } from 'socket.io';
-import { MongoClient } from 'mongodb';
+
+//Routes
+import filesRoutes from './routes/files.js';
+import userRoutes from './routes/user.js';
+
+//Scripts
+import * as db from './scripts/db.js';
 
 const app = express();
 const server = createServer(app);
 const port = 3000;
 const io = new Server(server);
 
-let singleton;
+app.use(express.json());
 
-async function connect(){
-    if(singleton) return singleton;
-
-    const client = new MongoClient('mongodb://localhost:27017/');
-    await client.connect();
-
-    singleton = client.db('chatApp');
-    return singleton;
-}
-
-async function insertMessage(message){
-    const db = await connect();
-    return db.collection('messages').insertOne(message);
-}
-
-async function findMessages(chatName){
-    const db = await connect();
-    return db.collection('messages').find({chatName: chatName}).toArray();
-}
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-app.get('/script.js', (req, res) => {
-    res.sendFile(join(__dirname, 'public/script.js'));
-});
-
-app.get('/style.css', (req, res) => {
-    res.sendFile(join(__dirname, 'public/style.css'));
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(join(__dirname, 'public/index.html'));
-});
-
-app.get('/register', (req, res) => {
-    res.sendFile(join(__dirname, 'public/register.html'));
-});
+app.use(filesRoutes);
+app.use(userRoutes);
 
 app.get('/click.mp3', (req, res) => {
     res.sendFile(join(__dirname, 'public/click.mp3'));
@@ -92,7 +61,7 @@ io.on("connection", (socket) => {
     socket.on("join room", (roomName, socketId) => {
         socket.join(roomName);
         if (messages[roomName]) {
-            const messagesDb = findMessages(roomName);
+            const messagesDb = db.findMessages(roomName);
             messagesDb.then((messages) => io.to(roomName).emit("load messages", messages, socketId, rooms[roomName], users));
         }
     });
