@@ -12,6 +12,7 @@ const avatarStart = fullUrl.indexOf('avatar=') + 'avatar='.length;
 const avatar = decodeURIComponent(fullUrl.slice(avatarStart));
 const user = window.localStorage.getItem('@userChatApp');
 
+
 socket.emit("join server", username, avatar);
 
 if (!user) {
@@ -30,13 +31,13 @@ function joinRoom(roomName) {
     roomConnected = roomName;
 }
 
-function keyupUser(e){
-    if(e.target.value.length === 0){
-        socket.emit("keyupOff", username);
-    }else{
-        socket.emit("keyup", username, roomConnected);
-    }
-}
+// function keyupUser(e){
+//     if(e.target.value.length === 0){
+//         socket.emit("keyupOff", username);
+//     }else{
+//         socket.emit("keyup", username, roomConnected);
+//     }
+// }
 function sendMessage(event) {
     event.preventDefault();
     const input = document.getElementById('message');
@@ -92,24 +93,59 @@ function loadMessagesChat(value, socketId) {
     chat.scroll(0, chat.scrollHeight);
 }
 
-function editTypingUser(usersKeyup, roomConnected){
-    console.log(roomConnected);
-    const el = document.querySelector(`.typing`);
-    if(el.classList.contains(roomConnected)){
-        let content = [];
-        usersKeyup.filter((u) => u !== username).forEach((u) => content.push(u));
-        if(content.length > 1){
-            el.textContent = 'Mais de um usuário está digitando...';
-        }else if(content.length === 1){
-            el.textContent = `${content[0]} está digitando...`;    
-        }else{
-            el.textContent = '';
-        }
-    }else{
-        el.textContent = '';
-    }
+// function editTypingUser(usersKeyup, roomConnected){
+//     const el = document.querySelector(`.typing`);
+//     if(el.classList.contains(roomConnected)){
+//         let content = [];
+//         usersKeyup.filter((u) => u !== username).forEach((u) => content.push(u));
+//         switch(content.length){
+//             case 0:
+//                 el.textContent = '';
+//                 break;
+//             case 1:
+//                 el.textContent = `${content[0]} esta digitando...`;
+//                 break;
+//             default:
+//                 el.textContent = 'Mais de um usuário está digitando...';
+//         }
+//     }else{
+//         el.textContent = '';
+//     }
     
-};
+// };
+function toggleEmoji(){
+    const emojiList = document.querySelector('.emojis-list ul');
+    const emojisListContainer = document.querySelector('.emojis-list');
+    if(emojisListContainer.style.display === 'block'){
+        emojisListContainer.style.display = 'none';
+    }else if(emojisListContainer.style.display === 'none' && emojiList.childNodes){
+        emojisListContainer.style.display = 'block';
+    }else{
+        fetch('http://localhost:3000/emojis.json').then((data) => {
+            return data.json();
+        }).then((data) => {
+            showEmoji(data);
+        });
+    
+        function showEmoji(data){
+            data.forEach((emoji) => {
+                let item = document.createElement('li');
+                item.setAttribute('emoji-name', emoji.slug);
+                item.textContent = emoji.character;
+                emojiList.appendChild(item);
+                item.addEventListener('click', () => {
+                    const input = document.getElementById('message');
+                    const emojiName = item.textContent;
+                    input.value += emojiName;
+                    input.focus();
+                })
+            })
+            emojisListContainer.style.display = 'block';
+        }
+    }
+}
+
+
 
 socket.on("new user", (users) => {
     const usersList = document.getElementById('users');
@@ -134,12 +170,15 @@ socket.on("new user", (users) => {
 });
 
 socket.on("new message", (msg, socketId) => {
+    const audio = new Audio('http://localhost:3000/click.mp3');
     loadMessagesChat(msg, socketId);
+    audio.play();
 });
 socket.on("load messages", (msg, socketId, roomTitle, users) => {
     if (checkSocket(socketId)) {
+        const audio = new Audio('http://localhost:3000/click.mp3');
         const chat = document.querySelector('.messages-container');
-        const typingEl = document.querySelector('.typing');
+        // const typingEl = document.querySelector('.typing');
 
         var children = Array.prototype.slice.call(chat.childNodes);
         children.forEach((child) => {
@@ -153,9 +192,9 @@ socket.on("load messages", (msg, socketId, roomTitle, users) => {
             chatHeader.removeChild(child);
         });
 
-        typingEl.setAttribute('class', 'typing');
-        typingEl.classList.add(roomConnected);
-        typingEl.textContent = '';
+        // typingEl.setAttribute('class', 'typing');
+        // typingEl.classList.add(roomConnected);
+        // typingEl.textContent = '';
 
         const elementHeader = document.createElement('h2');
         elementHeader.textContent =  roomTitle;
@@ -163,16 +202,17 @@ socket.on("load messages", (msg, socketId, roomTitle, users) => {
         msg.forEach((value) => {
             loadMessagesChat(value, socketId);
         });
+        audio.play();
     }
 });
 
-socket.on("keypress user", (usersKeyup, roomConnected) => {
-    editTypingUser(usersKeyup, roomConnected);
-});
+// socket.on("keypress user", (usersKeyup, roomConnected) => {
+//     editTypingUser(usersKeyup, roomConnected);
+// });
 
-socket.on("keypress off", (usersKeyup, roomConnected)=>{
-    editTypingUser(usersKeyup, roomConnected);
-});
+// socket.on("keypress off", (usersKeyup, roomConnected)=>{
+//     editTypingUser(usersKeyup, roomConnected);
+// });
 
 
 addEventListener('load', () => {
