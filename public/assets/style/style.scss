@@ -288,6 +288,9 @@ body {
                 align-items: center;
                 cursor: pointer;
                 font-size: 18px;
+                svg{
+                  color: #fff !important;
+                }
                 &:hover{
                   background-color: #555;
                   opacity: 0.8;

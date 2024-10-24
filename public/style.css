@@ -275,6 +275,9 @@ body {
   cursor: pointer;
   font-size: 18px;
 }
+.chat-input form .emoji-container .emoji-wrapper .emojis-list .emojis-groups li svg {
+  color: #fff !important;
+}
 .chat-input form .emoji-container .emoji-wrapper .emojis-list .emojis-groups li:hover {
   background-color: #555;
   opacity: 0.8;

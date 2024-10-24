@@ -249,8 +249,8 @@
             }
             const response = axios.post('/user', user).then(function (response) {
                 if (response.status != 200) {
-                    // window.localStorage.setItem('@userChatApp', JSON.stringify(user));
-                    // window.location.href = "http://localhost:3000?username=" + document.getElementById('username').value + '&avatar=' + document.getElementById('profileImage').src;
+                    window.localStorage.setItem('@userChatApp', JSON.stringify(user));
+                    window.location.href = "http://localhost:3000?username=" + document.getElementById('username').value + '&avatar=' + document.getElementById('profileImage').src;
                 } 
                 document.getElementById('titleModal').innerHTML = response.data.title;
                 document.getElementById('messageModal').innerHTML = response.data.message;
